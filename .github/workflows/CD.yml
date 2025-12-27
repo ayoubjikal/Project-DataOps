@@ -2,7 +2,7 @@ name: CD - Deploy Airflow with Astro
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
