@@ -29,7 +29,7 @@ def open_connection():
 def create_raw():
     sf = open_connection()
     cur = sf.cursor()
-    cur.execute("CREATE OR REPLACE SCHEMA raw;")
+    cur.execute("CREATE OR REPLACE SCHEMA ecommerce_db.raw;")
     print(cur.fetchone())
     sf.close()
 
