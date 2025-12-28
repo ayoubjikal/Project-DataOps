@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.hooks.base import BaseHook
 from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 import snowflake.connector
 import os
 
@@ -96,4 +97,12 @@ with DAG(
     create_stage_task = PythonOperator(task_id='test_stage', python_callable=create_stage)
     upload_snowflake_task = PythonOperator(task_id='test_snowflake', python_callable=upload_snowflake)
 
-    create_raw_task >> create_table_task >> create_fileFormat_task >> create_stage_task >> upload_snowflake_task
+    run_dbt = BashOperator(
+        task_id="run_dbt_models",
+        bash_command="""
+        cd /app/include/dbt &&
+        dbt deps &&
+        dbt run
+        """
+    )       
+    create_raw_task >> create_table_task >> create_fileFormat_task >> create_stage_task >> upload_snowflake_task >> run_dbt
