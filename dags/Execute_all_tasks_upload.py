@@ -97,12 +97,15 @@ with DAG(
     create_stage_task = PythonOperator(task_id='test_stage', python_callable=create_stage)
     upload_snowflake_task = PythonOperator(task_id='test_snowflake', python_callable=upload_snowflake)
 
+    from airflow.providers.standard.operators.bash import BashOperator
+
     run_dbt = BashOperator(
-        task_id="run_dbt_models",
-        bash_command="""
-        cd /app/include/dbt &&
-        dbt deps &&
-        dbt run
-        """
-    )       
+    task_id="run_dbt_models",
+    bash_command="""
+    cd /usr/local/airflow/include/dbt &&
+    dbt deps &&
+    dbt run
+    """,
+)
+
     create_raw_task >> create_table_task >> create_fileFormat_task >> create_stage_task >> upload_snowflake_task >> run_dbt
