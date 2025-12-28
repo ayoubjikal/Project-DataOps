@@ -99,13 +99,13 @@ with DAG(
 
     from airflow.providers.standard.operators.bash import BashOperator
 
-    run_dbt = BashOperator(
-    task_id="run_dbt_models",
+    dbt_run = BashOperator(
+    task_id='run_dbt_models',
     bash_command="""
-    cd /usr/local/airflow/include/dbt &&
-    dbt deps &&
-    dbt run
+    cd /usr/local/airflow/include/dbt && \
+    dbt deps && \
+    dbt run --profiles-dir /usr/local/airflow/include/dbt/profiles
     """,
 )
 
-    create_raw_task >> create_table_task >> create_fileFormat_task >> create_stage_task >> upload_snowflake_task >> run_dbt
+    create_raw_task >> create_table_task >> create_fileFormat_task >> create_stage_task >> upload_snowflake_task >> dbt_run
